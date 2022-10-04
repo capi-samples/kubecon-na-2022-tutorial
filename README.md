@@ -30,6 +30,10 @@ We will be creating a **infrastructure** provider for Docker as part of this tut
 
 > **Why clone into the GOPATH?** There have been historic issues with code generation tools when they are run outside the go path
 
+5. Add the following to the `.gitignore` in your providers repo
+    - **.vscode/**
+    - **.tiltbuild/**
+    - **bin/**
 
 ## Skafolding
 
@@ -51,7 +55,15 @@ kubebuilder create api --group infrastructure --version v1alpha1 --kind DockerCl
 kubebuilder create api --group infrastructure --version v1alpha1 --kind DockerMachine
 ```
 
-4. Take a look at the generated code:
+4. Run the following commands:
+
+```shell
+make generate
+make manifests
+make build
+```
+
+5. Take a look at the generated code:
    a. `api/v1alpha1` folder contains the CRD definitions for your infrastructsure cluster & machine
    b. `controllers` contains the controllers that will reconcile instances of your infrastructure CRDs
    c. `config` contains the Kubernetes artefacts that will be bundled together and used when deploying our provider
@@ -247,6 +259,8 @@ tilt up
 11. Press the **space** key to see the Tilt web ui and check that everything goes green. 
 
 > You can click on **(Tiltfile)** to see all the resources.
+
+**Congratulations you now have your provider running via Tilt. If you make any code changes you should see that your provider is automatically rebuilt**
 
 ### Debugging
 
