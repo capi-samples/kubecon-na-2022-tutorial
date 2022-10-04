@@ -1,5 +1,8 @@
 # Building a Cluster API Provider
 
+[![hackmd-github-sync-badge](https://hackmd.io/R3b2HacRQ2aoRQRGnaSy3Q/badge)](https://hackmd.io/R3b2HacRQ2aoRQRGnaSy3Q)
+
+
 ## Pre-reqs
 - [Kubebuilder v3.6.0](https://github.com/kubernetes-sigs/kubebuilder/releases/tag/v3.6.0)
 - Docker
