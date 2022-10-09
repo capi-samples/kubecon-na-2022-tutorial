@@ -2,7 +2,7 @@
 
 This is the tutorial to accompany the Kubecon NA session.
 
-Follow theses steps to complete the tutorial:
+Follow these steps to complete the tutorial:
 
 1. [Prereqs](0-prereqs.md)
 2. [Introduction](1-intro.md)

@@ -10,6 +10,7 @@
 > **Why clone into the GOPATH?** There have been historic issues with code generation tools when they are run outside the go path
 
 5. Add the following to the `.gitignore` in your providers repo
+    - **.idea/**
     - **.vscode/**
     - **.tiltbuild/**
     - **bin/**

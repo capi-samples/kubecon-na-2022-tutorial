@@ -1,6 +1,6 @@
 # Implementing the machine api/controller
 
-**TODO: Quick recap on the contract / responsilibility, then steps
+**TODO: Quick recap on the contract / responsibility, then steps
 
 Find the Machine Infrastructure Provider contract [here](https://cluster-api.sigs.k8s.io/developer/providers/machine-infrastructure.html)
 
