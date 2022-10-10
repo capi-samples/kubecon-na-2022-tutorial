@@ -1,6 +1,6 @@
 # Setting up Tilt
 
-**Objective:** Learn how to setup `Tilt` to enable us to develop the provider in a rapid & interartive manor. Also learn how we can attach a debugger to the provider.
+**Objective:** Learn how to setup `Tilt` to enable us to develop the provider in a rapid & iterative manner. Also learn how we can attach a debugger to the provider.
 
 **Background:** Every CAPI provider has a `tilt-provider.json` in the root of its repo which is used by the upstream CAPI Tiltfile to tell it about your provider. This is used to configure hot reloading and the categorization within the tilt ui
 
@@ -29,15 +29,15 @@
 ```
 
 4. Note the following from the content:
-   1. **name** is the name of the provider you would use with `clusterctl` and whenconfiguring Tilt in CAPI
-   2.   **image** is the name of the image that Tilt will look for modifying the kubernetes artefactes.
-   3.   **live_reload_deps** is a list of files & folders that will be monitored for changes. If a change ocurs then Tilt will rebuild your provider and re-install it into the cluster
+   1.   **name** is the name of the provider you would use with `clusterctl` and when configuring Tilt in CAPI
+   2.   **image** is the name of the image that Tilt will look for modifying the kubernetes artifacts.
+   3.   **live_reload_deps** is a list of files & folders that will be monitored for changes. If a change occurs then Tilt will rebuild your provider and re-install it into the cluster
    4.   **label** is required for the Tilt UI
    5.   You can have more than 1 provider in a repo so this block could be repeated many times.
 
-> NOTE: There are conventions that relate to the accroynm used for a CAPI provider.....**TODO
+> NOTE: There are conventions that relate to the acronym used for a CAPI provider.....**TODO
 
-5. Edit the `config/default/kustomization.yaml` in your providers repo:
+5. Edit the `config/default/kustomization.yaml` in your provider repo:
     1. Change the `namespace` to **capdkc-system**
     2. Change the `namePrefix` to **capdkc-**
     3. Uncomment and add a label to `commonLabels` called **cluster.x-k8s.io/provider** with a value of **"infrastructure-capdkc"**
@@ -169,7 +169,7 @@ spec:
     }
 }
 ```
-7. We will not cover every setting in this file (see docs for a full description) but note the following:
+7. We will not cover every setting in this file (see [Cluster API doc](https://cluster-api.sigs.k8s.io/developer/tilt.html#tilt-settings-fields) for more info) but note the following:
     1. **provider_repos**: contains the path to your clones providers repo
     2. **enable_providers**: this is where we say which providers we want installed in our local management cluster. We are using the **docker-kubecon** here for our provider and this matches the name in the `tilt-provider.json` file
     3. **debug**: we are saying that we want our provider to be started via delve and the debugger to listen on port **30000**.

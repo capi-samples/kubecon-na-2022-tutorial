@@ -1,6 +1,6 @@
 # Implementing the cluster api/controller
 
-**TODO: Quick recap on the contract / responsilibility, then steps
+**TODO: Quick recap on the contract / responsibility, then steps
 
 1. Add a reference to the packages we need:
 
