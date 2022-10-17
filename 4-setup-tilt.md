@@ -146,8 +146,16 @@ spec:
             path: /var/run/docker.sock
 
 ```
-5. Create a `tilt-settings.json` file in the root of your forked/cloned `cluster-api` directory.
-6. Add the following contents to the file:
+13. To enable CAPI to perform conversion of object references we must state what versions of CAPI matches our providers. This is done using a label on the CRDS.
+    1. Open `config/crd/kustomization.yaml`
+    2. Add the following after the **resources** section:
+    ```go
+    commonLabels:
+      cluster.x-k8s.io/v1beta1: v1alpha1
+    ```
+    > See the [provider contract](https://cluster-api.sigs.k8s.io/developer/providers/contracts.html#api-version-labels) for more details
+14.  Create a `tilt-settings.json` file in the root of your forked/cloned `cluster-api` directory.
+15.  Add the following contents to the file:
 
 ```json
 {
@@ -164,29 +172,42 @@ spec:
     "debug": {
         "docker-kubecon": {
             "continue": true,
-            "port": 30000
+            "port": 31000
         }
     }
 }
 ```
-7. We will not cover every setting in this file (see [Cluster API doc](https://cluster-api.sigs.k8s.io/developer/tilt.html#tilt-settings-fields) for more info) but note the following:
+16. We will not cover every setting in this file (see [Cluster API doc](https://cluster-api.sigs.k8s.io/developer/tilt.html#tilt-settings-fields) for more info) but note the following:
     1. **provider_repos**: contains the path to your clones providers repo
     2. **enable_providers**: this is where we say which providers we want installed in our local management cluster. We are using the **docker-kubecon** here for our provider and this matches the name in the `tilt-provider.json` file
     3. **debug**: we are saying that we want our provider to be started via delve and the debugger to listen on port **30000**.
-8. Open another terminal (or pane) and go to the `cluster-api` directory.
-9. Run the following command to create a local kind cluster:
+17. Open another terminal (or pane) and go to the `cluster-api` directory.
+18. Run the following to create a configuration for kind:
+```shell
+cat > kind-cluster-with-extramounts.yaml <<EOF
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: capi-test
+nodes:
+- role: control-plane
+  extraMounts:
+    - hostPath: /var/run/docker.sock
+      containerPath: /var/run/docker.sock
+EOF
+```
+19. Run the following command to create a local kind cluster:
 
 ```shell
-kind create cluster --name=capi-test
+kind create cluster --config kind-cluster-with-extramounts.yaml
 ```
 
-10. Now start tilt by running the following:
+20. Now start tilt by running the following:
 
 ```shell
 tilt up
 ```
 
-11. Press the **space** key to see the Tilt web ui and check that everything goes green. 
+21. Press the **space** key to see the Tilt web ui and check that everything goes green.
 
 > You can click on **(Tiltfile)** to see all the resources.
 

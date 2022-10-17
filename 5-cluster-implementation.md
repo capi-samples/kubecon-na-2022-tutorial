@@ -46,7 +46,7 @@ When implementing the controller for `DockerCluster` (and `DockerMachine`) you w
    ```go
 	// Ready indicates that the cluster is ready.
 	// +optional
-	// +kubebuilder:default=false
+	// +kubebuilder:default=falctrl.SetupSignalHandler()se
 	Ready bool `json:"ready"`
    ```
 4. Now add the provider specific fields to the **DockerClusterSpec**. In our example we will allow the user to optionally override the image to use for the loadbalancer. Add the following:
@@ -100,13 +100,28 @@ func (r *DockerClusterReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 5. Our controller will need read RBAC permission for **Cluster**. So add the following to the comment for **Reconcile**:
 ```go
 // +kubebuilder:rbac:groups=cluster.x-k8s.io,resources=clusters;clusters/status,verbs=get;list;watch
-```  
-6. In the **Reconcile** make these changes:
+```
+6. We will be interacting with the container runtime, to support this:
+   1. Add `"github.com/capi-samples/cluster-api-provider-docker/pkg/container"` as an import
+   2. Add a struct level field to hold a reference to the container runtime to **DockerClusterReconciler**:
+   ```go
+   type DockerClusterReconciler struct {
+		client.Client
+		Scheme           *runtime.Scheme
+		ContainerRuntime container.Runtime
+	}
+   ```
+   3. 
+7. In the **Reconcile** make these changes:
    1. We will be creating log entries so save the logger to a variable
    ```go
    logger := log.FromContext(ctx)
    ```
-   1. Change this import `infrastructurev1alpha1 "github.com/capi-samples/cluster-api-provider-docker/api/v1alpha1"` to `infrav1 "github.com/capi-samples/cluster-api-provider-docker/api/v1alpha1"` and update the import name in **SetupWithManager**
+   2. Add the container runtime information to the context so it can be used later:
+	```go
+	ctx = container.RuntimeInto(ctx, r.ContainerRuntime)
+	```
+   3. Change this import `infrastructurev1alpha1 "github.com/capi-samples/cluster-api-provider-docker/api/v1alpha1"` to `infrav1 "github.com/capi-samples/cluster-api-provider-docker/api/v1alpha1"` and update the import name in **SetupWithManager**
    > The convention is to import your api with the major api version in the name only. The reason is when introducing a new api version you just update the import and not the import alias so as to reduce the number of code changes.
    1. Add the following imports:
    ```go
@@ -284,8 +299,10 @@ controllerutil.RemoveFinalizer(dockerCluster, infrav1.ClusterFinalizer)
 2. Add the following imports:
 ```go
 "sigs.k8s.io/controller-runtime/pkg/handler"
-"sigs.k8s.io/cluster-api/util/predicates"
 "sigs.k8s.io/controller-runtime/pkg/source"
+
+"sigs.k8s.io/cluster-api/util/predicates"
+"github.com/capi-samples/cluster-api-provider-docker/pkg/container"
 ```
 3. Change the signature of the **SetupWithManager** function so it accepts the context:
 ```go
@@ -315,23 +332,36 @@ return c.Watch(
 > This is saying to watch **clusterv1.Cluster** and if there is a change to **Cluster** get the child **DockerCluster** name/namespace using `util.ClusterToInfrastructureMapFunc(ctx, infrav1.GroupVersion.WithKind("DockerCluster"), mgr.GetClient(), &infrav1.DockerCluster{})` and then use that name/namespace to enqueue a requests for reconciliation of the **DockerCluster** with that name/namespace using `handler.EnqueueRequestsFromMapFunc`. This will then result in **Reconciliation** being called
 7. As we have changed the parameters to **SetupWithManager** go to `main.go`.
 8. In the **main** function make these changes:
-   1. Add the following at the start:
+   1. Add the following before we create the reconcilers:
    ```go
    ctx := ctrl.SetupSignalHandler()
+   	// Set our runtime client into the context for later use
+	runtimeClient, err := container.NewDockerClient()
+	if err != nil {
+		setupLog.Error(err, "unable to establish container runtime connection", "controller", "reconciler")
+		os.Exit(1)
+	}
    ```
    > This setups signal handlers so that the controllers can be gracefully terminated.
-   2. Change the value when setting **LeaderElectionID** to `controller-leader-election-capdkc`
-   3. Change the call to **SetupWithManager** to pass in the context:
+   2. Update the creation of **DockerClusterReconciler** to pass in the **runtimeClient** and the call to **SetupWithManager** on to pass in the context:
    ```go
 	if err = (&controllers.DockerClusterReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
+		Client:           mgr.GetClient(),
+		Scheme:           mgr.GetScheme(),
+		ContainerRuntime: runtimeClient,
 	}).SetupWithManager(ctx, mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "DockerCluster")
 		os.Exit(1)
 	}
    ```
-9. Run the following from a terminal:
+   1. Change the `mgr.Start` to use the context created earlier:
+   ```go
+   if err := mgr.Start(ctx); err != nil {
+   ```
+9. Ensure that all the api types are registered:
+   1. Add `clusterv1 "sigs.k8s.io/cluster-api/api/v1beta1"` as an import in `main.go` 
+   2. Add this api top the scheme by adding
+10.  Run the following from a terminal:
 ```shell
 make manifests
 make build
