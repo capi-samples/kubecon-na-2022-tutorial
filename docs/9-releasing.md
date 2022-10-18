@@ -209,8 +209,6 @@ git push origin "${RELEASE_VERSION}"
 6. Go to the new **v0.1.0** and check that the assets have been attached and the release notes are ok.
 7. Edit the release and then click **Publish Release**
 8. Go to the root of your repo and click on the **cluster-api-provider-docker** package
-
-
 9. By default the package will be public. We will make it public:
    1.  Click **Package settings**
    2.  Scroll down to the **Danger Zone** and click on **Change visibility**
