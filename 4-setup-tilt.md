@@ -58,9 +58,9 @@ spec:
         name: manager
 ```
 
-7. Edit `config/default/kustomization.yaml` and add `manager_image_patch.yaml` to the **patchesStrategicMerge**
+7. Edit `config/default/kustomization.yaml` and add `manager_image_patch.yaml` to **patchesStrategicMerge**
 8. Delete the `config/default/manager_auth_proxy_patch.yaml` and `config/default/manager_config_patch.yaml` files.
-9. Edit `config/default/kustomization.yaml` and remove `manager_auth_proxy_patch.yaml` to the **patchesStrategicMerge**
+9. Edit `config/default/kustomization.yaml` and remove `manager_auth_proxy_patch.yaml` from **patchesStrategicMerge**
 10. Delete `config/manager/controller_manager_config.yaml`
 11. Edit `config/manager/kustomization.yaml` so that its contents match:
 
@@ -155,12 +155,12 @@ spec:
     ```
     > See the [provider contract](https://cluster-api.sigs.k8s.io/developer/providers/contracts.html#api-version-labels) for more details
 14.  Create a `tilt-settings.json` file in the root of your forked/cloned `cluster-api` directory.
-15.  Add the following contents to the file:
+15.  Add the following contents to the file (replace "yourname" with your github account name):
 
 ```json
 {
     "default_registry": "gcr.io/yourname",
-    "provider_repos": ["../../github.com/capi-samples/cluster-api-provider-docker"],
+    "provider_repos": ["../../github.com/yourname/cluster-api-provider-docker"],
     "enable_providers": ["docker-kubecon", "kubeadm-bootstrap", "kubeadm-control-plane"],
     "kustomize_substitutions": {
         "EXP_MACHINE_POOL": "true",
