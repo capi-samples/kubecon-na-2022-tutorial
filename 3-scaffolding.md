@@ -35,3 +35,12 @@ make build
    1. `api/v1alpha1` folder contains the CRD definitions for your infrastructure cluster & machine
    2. `controllers` contains the controllers that will reconcile instances of your infrastructure CRDs
    3. `config` contains the Kubernetes artifacts that will be bundled together and used when deploying our provider
+
+6. Make a change to `main.go` change the port for the **health-probe-bind-address** flag from `8081` to `9440`:
+
+```go
+flag.StringVar(&probeAddr, "health-probe-bind-address", ":9440", "The address the probe endpoint binds to.")
+```
+
+> This change is required as the liveness/readiness probes get generated using port 9440 but the code uses 8081 by default. If you don't change this then when you deploy the liveness and readiness probes will fail
+
