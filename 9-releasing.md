@@ -14,7 +14,7 @@
 
 For your provider to be installable using **clusterctl** there are a number of requirements as a provider author that you must be aware of.
 
-Firstly, you must create a file that clusterctl can use to know which version of your provider is compatible with which API API versions. This file is called **metadata.yaml** and lives in your repo.
+Firstly, you must create a file that clusterctl can use to know which version of your provider is compatible with which API versions. This file is called **metadata.yaml** and lives in your repo.
 
 Secondly, your provider must be built into a container image that is available via a registry. This is normally a public registry (such as Docker Hub or GitHub Container Registry) but it is also possible to use a private registry.
 
@@ -22,11 +22,11 @@ Lastly, for each new version of your provider you will create a GitHub release. 
 
 > You must use semver for versioning.
 
-Each GitHup release is expected to have certain artefacts attached to it:
+Each GitHub release is expected to have certain artefacts attached to it:
 
 - **metadata.yaml**
 - **infrastructure-components.yaml** - this is all the k8s artefacts required to install your provider
-- **cluster-template*.yaml** - these are the cluster templates that users will be able to use with `clusterctl generate cluster`
+- **cluster-template-\*.yaml** - these are the cluster templates that users will be able to use with `clusterctl generate cluster`
 
 ## Create metadata.yaml
 
@@ -180,7 +180,7 @@ jobs:
 
 ## Create out first release
 
-> If you bumping the MAJOR or MINOR version number you will need to change **metadata.yaml** first and commit this to your repo.
+> If you are bumping the MAJOR or MINOR version number you will need to change **metadata.yaml** first and commit this to your repo.
 
 1. Open a terminal and go to your providers directory
 2. Checkout main, get latest and pull tags:
