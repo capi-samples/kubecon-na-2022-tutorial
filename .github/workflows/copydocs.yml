@@ -1,0 +1,33 @@
+name: Copy docs to branch
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  copy-docs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Copy content
+        env:
+          TARGET_BRANCH: "documentation"
+        run: |
+          images=$(find images/ -type f)
+          docs=$(find *.md -type f \( ! -iname "README.md" \))
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git fetch
+          git checkout $TARGET_BRANCH
+          git checkout ${GITHUB_REF##*/} -- $images $docs
+          mkdir -p static/images/
+          mv images/* static/images/
+          mkdir -p docs/
+          mv *.md docs/
+          rm docs/README.md
+          git add -A
+          git diff-index --quiet HEAD ||  git commit -am "deploy files"
+          git push origin $TARGET_BRANCH
