@@ -210,7 +210,6 @@ git push origin "${RELEASE_VERSION}"
 7. Edit the release and then click **Publish Release**
 8. Go to the root of your repo and click on the **cluster-api-provider-docker** package
 
-![package](./images/packages.png)
 
 9. By default the package will be public. We will make it public:
    1.  Click **Package settings**
