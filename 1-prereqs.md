@@ -9,5 +9,6 @@ You will need to install the following to follow along with this tutorial:
 - [Kubectl](https://kubernetes.io/docs/tasks/tools/)
 - [Kustomize](https://github.com/kubernetes-sigs/kustomize)
 - [kind](https://kind.sigs.k8s.io/)
+- [clusterctl](https://github.com/kubernetes-sigs/cluster-api/releases)
 
 > NOTE: we are not using v3.7.0 for Kubebuilder due to an issue with Apple M1 Silicon
