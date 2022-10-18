@@ -2,6 +2,8 @@
 
 You will need to install the following to follow along with this tutorial:
 
+- git
+- make
 - [Go v1.19](https://go.dev/dl/)
 - [Kubebuilder v3.6.0](https://github.com/kubernetes-sigs/kubebuilder/releases/tag/v3.6.0)
 - [Docker](https://docs.docker.com/get-docker/)
