@@ -8,9 +8,10 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'Build a Cluster API Provider',
   tagline: 'Kubecon NA 2022',
-  url: 'https://your-docusaurus-test-site.com',
-  baseUrl: '/',
-  onBrokenLinks: 'throw',
+  url: 'https://capi-samples.github.io/kubecon-na-2022-tutorial/',
+  baseUrl: '/kubecon-na-2022-tutorial/',
+  //onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
 
