@@ -2,7 +2,7 @@ name: Copy docs to branch
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
