@@ -22,7 +22,7 @@ Lastly, for each new version of your provider you will create a GitHub release. 
 
 > You must use semver for versioning.
 
-Each GitHub release is expected to have certain artefacts attached to it:
+Each GitHub release is expected to have certain artifacts attached to it:
 
 - **metadata.yaml**
 - **infrastructure-components.yaml** - this is all the k8s artefacts required to install your provider
@@ -232,7 +232,7 @@ providers:
 EOF
 ```
 
-> Change the value of **RELEASE_VERSION** if needed and also make sure you use your GitHun name instead of **capi-samples**
+> Change the value of **RELEASE_VERSION** if needed and also make sure you use your GitHub name instead of **capi-samples**
 
 3. Open a terminal and create a new cluster in kind:
 
@@ -250,7 +250,7 @@ EOF
 
 kind create cluster --config kind-cluster-with-extramounts.yaml
 ```
-4. Create a managemnt cluster with our provider:
+4. Create a management cluster with our provider:
 
 ```shell
 clusterctl init --infrastructure docker-kubecon
