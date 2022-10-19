@@ -198,6 +198,48 @@ I1016 16:43:50.522478      11 leaderelection.go:248] attempting to acquire leade
 I1016 16:44:06.032008      11 leaderelection.go:258] successfully acquired lease capdkc-system/c9b04f86.cluster.x-k8s.io
 ```
 
+### Let's add a simple validation
+Open `api/v1alpha1/dockercluster_webhook.go` and edit `ValidateCreate` function. The webhook will reject a docker cluster named `kubecon-eu` to be created.
+```go
+// ValidateCreate implements webhook.Validator so a webhook will be registered for the type
+func (r *DockerCluster) ValidateCreate() error {
+	dockerclusterlog.Info("validate create", "name", r.Name)
+
+	if r.Name == "kubecon-eu" {
+		return fmt.Errorf("docker cluster name cannot be kubecon-eu")
+	}
+
+	return nil
+}
+```
+
+Generate a new cluster template.
+```bash
+export KUBERNETES_VERSION=v1.22.0
+export CLUSTER_NAME=kubecon-eu
+export CONTROL_PLANE_MACHINE_COUNT=1
+export WORKER_MACHINE_COUNT=1
+
+clusterctl generate cluster -i docker-kubecon:$RELEASE_VERSION  $CLUSTER_NAME > cluster-test.yaml
+```
+
+Apply the template and see the webhook in action. You can see that admission webhook denied the request on the last line.
+```bash
+➜  kubectl apply -f cluster-test.yaml
+cluster.cluster.x-k8s.io/kubecon-eu created
+kubeadmcontrolplane.controlplane.cluster.x-k8s.io/kubecon-eu-control-plane created
+dockermachinetemplate.infrastructure.cluster.x-k8s.io/kubecon-eu-control-plane created
+machinedeployment.cluster.x-k8s.io/kubecon-eu-md-0 created
+dockermachinetemplate.infrastructure.cluster.x-k8s.io/kubecon-eu-md-0 created
+kubeadmconfigtemplate.bootstrap.cluster.x-k8s.io/kubecon-eu-md-0 created
+Error from server (docker cluster name cannot be kubecon-eu): error when creating "cluster-test.yaml": admission webhook "vdockercluster.kb.io" denied the request: docker cluster name cannot be kubecon-eu
+```
+
+Let's clean up.
+```bash
+➜  kubectl delete -f cluster-test.yaml
+```
+
 ---
 ## Resource
 * [Dynamic Admission Control](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/)
