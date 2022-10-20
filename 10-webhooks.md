@@ -215,7 +215,7 @@ func (r *DockerCluster) ValidateCreate() error {
 
 Generate a new cluster template.
 ```bash
-export KUBERNETES_VERSION=v1.22.0
+export KUBERNETES_VERSION=v1.23.0
 export CLUSTER_NAME=kubecon-eu
 export CONTROL_PLANE_MACHINE_COUNT=1
 export WORKER_MACHINE_COUNT=1
