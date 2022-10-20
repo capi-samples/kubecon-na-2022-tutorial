@@ -27,7 +27,6 @@ jobs:
           mv images/* static/images/
           mkdir -p docs/
           mv *.md docs/
-          rm docs/README.md
           git add -A
           git diff-index --quiet HEAD ||  git commit -am "deploy files"
           git push origin $TARGET_BRANCH
