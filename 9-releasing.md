@@ -25,7 +25,7 @@ Lastly, for each new version of your provider you will create a GitHub release. 
 Each GitHub release is expected to have certain artifacts attached to it:
 
 - **metadata.yaml**
-- **infrastructure-components.yaml** - this is all the k8s artefacts required to install your provider
+- **infrastructure-components.yaml** - this is all the k8s resources required to install your provider
 - **cluster-template-\*.yaml** - these are the cluster templates that users will be able to use with `clusterctl generate cluster`
 
 ## Create metadata.yaml
@@ -48,16 +48,16 @@ releaseSeries:
     contract: v1beta1
 ```
 
-> This is mapping the 0.1.x release series to the v1beta1 api contract of CAPI. You will need to update this file when you change the major or minor version number AND when there is a new version of CAPI API contract that your provider supports.
+> This is mapping our 0.1.x release series to the v1beta1 api contract of CAPI. You will need to update this file when you change the major or minor version number AND when there is a new version of the CAPI API contract that your provider supports.
 
 ## Update the container build
 
-The generated **Dockerfile** from the skaffolding stage uses Docker [multi-stage builds](https://docs.docker.com/build/building/multi-stage/).
+The generated **Dockerfile** from the scaffolding stage uses Docker [multi-stage builds](https://docs.docker.com/build/building/multi-stage/).
 
 1. Edit **Dockerfile**:
    1. change `FROM golang:1.18 as builder` to `FROM golang:1.19 as builder`
    2. add `COPY pkg/ pkg/` to the source code copying
-   3. In the second stage (i.e. after `FROM gcr.io/distroless/static:nonroot`) add a label to associate the images with your repo: `LABEL org.opencontainers.image.source=https://github.com/capi-samples/cluster-api-provider-docker` (**Change the owner of the repo to your name**)
+   3. In the second stage (i.e. after `FROM gcr.io/distroless/static:nonroot`) add a label to associate the images with your repo: `LABEL org.opencontainers.image.source=https://github.com/capi-samples/cluster-api-provider-docker` (**Change the **capi-samples** to the owner of your repo**)
 2. Edit **Makefile** change and  `IMG ?= controller:latest` to:
 
 ```make
@@ -89,14 +89,14 @@ We will be using GitHub Actions and GitHub Container Registry to create our rele
 
 1. Create the `.github/workflows` folders in your repo
 2. Create a new file called **release.yml** in the new **workflows** folder
-3. Unless specified the remainder of the steps are **additions** to **release.yml**
+3. Unless specified the remainder of the steps are **additions** to the **release.yml** file
 4. Start by naming the workflow:
 
 ```yaml
 name: release
 ```
 
-5. Next we define that we want the workflow to run when we push a new tag that follows sematic versioning:
+5. Next we define that we want the workflow to run when we push a new tag that follows semantic versioning:
 
 ```yaml
 on:
@@ -105,7 +105,7 @@ on:
     - "v*.*.*"
 ```
 
-6. For convenience we will define a couple of environment variables that we can use later on in the job & steps definitions:
+6. For convenience we will define a couple of environment variables that we can use later on in the workflow:
 
 ```yaml
 env:
@@ -260,7 +260,7 @@ clusterctl init --infrastructure docker-kubecon
 6. Create a new cluster using the template:
 
 ```shell
-export KUBERNETES_VERSION=v1.22.0
+export KUBERNETES_VERSION=v1.23.0
 export CLUSTER_NAME=kubecontest
 export CONTROL_PLANE_MACHINE_COUNT=1
 export WORKER_MACHINE_COUNT=1

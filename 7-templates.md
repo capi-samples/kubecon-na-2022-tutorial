@@ -76,7 +76,7 @@ metadata:
   name: "${CLUSTER_NAME}-control-plane"
 spec:
   replicas: ${CONTROL_PLANE_MACHINE_COUNT}
-  version: "${KUBERNETES_VERSION:=v1.21.8}"
+  version: "${KUBERNETES_VERSION:=v1.23.0}"
   machineTemplate:
     infrastructureRef:
       kind: DockerMachineTemplate
@@ -87,10 +87,6 @@ spec:
         nodeRegistration:
             # We have to set the criSocket to containerd as kubeadm defaults to docker runtime if both containerd and docker sockets are found
             criSocket: unix:///var/run/containerd/containerd.sock
-            ignorePreflightErrors:
-            - Swap
-            - DirAvailable--etc-kubernetes-manifests
-            - FileAvailable--etc-kubernetes-kubelet.conf
             kubeletExtraArgs:
               cgroup-driver: cgroupfs
               eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
@@ -101,10 +97,6 @@ spec:
         nodeRegistration:
             # We have to set the criSocket to containerd as kubeadm defaults to docker runtime if both containerd and docker sockets are found
             criSocket: unix:///var/run/containerd/containerd.sock
-            ignorePreflightErrors:
-            - Swap
-            - DirAvailable--etc-kubernetes-manifests
-            - FileAvailable--etc-kubernetes-kubelet.conf
             kubeletExtraArgs:
               cgroup-driver: cgroupfs
               eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
@@ -139,7 +131,7 @@ spec:
   template:
     spec:
       clusterName: "${CLUSTER_NAME}"
-      version: "${KUBERNETES_VERSION:=v1.21.8}"
+      version: "${KUBERNETES_VERSION:=v1.23.0}"
       bootstrap:
         configRef:
           name: "${CLUSTER_NAME}-md-0"
@@ -177,8 +169,11 @@ spec:
     spec:
       joinConfiguration:
         nodeRegistration:
-            # We have to set the criSocket to containerd as kubeadm defaults to docker runtime if both containerd and docker sockets are found
-            criSocket: unix:///var/run/containerd/containerd.sock
+          # We have to set the criSocket to containerd as kubeadm defaults to docker runtime if both containerd and docker sockets are found
+          criSocket: unix:///var/run/containerd/containerd.sock
+          kubeletExtraArgs:
+            cgroup-driver: cgroupfs
+            eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
 ```
 
 ## Test the template
@@ -189,7 +184,7 @@ Now we have the template defined we can test it using clusterctl.
 2. Create environment variables with values for all the tokens in the template (that don't have a default values):
 
 ```shell
-export KUBERNETES_VERSION=v1.22.0
+export KUBERNETES_VERSION=v1.23.0
 export CLUSTER_NAME=kubecontest
 export CONTROL_PLANE_MACHINE_COUNT=1
 export WORKER_MACHINE_COUNT=1
