@@ -72,26 +72,26 @@ const config = {
       footer: {
         style: 'dark',
         links: [
-          {
-            title: 'Docs',
-            items: [
-              {
-                label: 'Tutorial',
-                to: '/docs/1-prereqs.md',
-              },
-            ],
-          },
-          {
-            title: 'More',
-            items: [
-              {
-                label: 'GitHub',
-                href: 'https://github.com/capi-samples/kubecon-na-2022-tutorial',
-              },
-            ],
-          },
+          // {
+          //   title: 'Docs',
+          //   items: [
+          //     {
+          //       label: 'Tutorial',
+          //       to: '/docs/1-prereqs.md',
+          //     },
+          //   ],
+          // },
+          // {
+          //   title: 'More',
+          //   items: [
+          //     {
+          //       label: 'GitHub',
+          //       href: 'https://github.com/capi-samples/kubecon-na-2022-tutorial',
+          //     },
+          //   ],
+          // },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} The Kubernetes Authors Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} The Kubernetes Authors, Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,

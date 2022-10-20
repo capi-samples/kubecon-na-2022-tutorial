@@ -4,39 +4,48 @@ import styles from './styles.module.css';
 
 const FeatureList = [
   {
-    title: 'Learn',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: 'Winnie Kwon',
+    imgurl: require('@site/static/img/winnie.jpeg').default,
     description: (
       <>
-        Learn to build your own Cluster API Provider.
+        Engineering Manager @ VMWare
       </>
     ),
   },
   {
-    title: 'Insight',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: 'Richard Case',
+    imgurl: require('@site/static/img/richard.png').default,
     description: (
       <>
-        We'll cover what is needed to get started.
+        Principal Engineer @ SUSE
       </>
     ),
   },
   {
-    title: 'Adapt',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: 'Anusha Hegde',
+    imgurl: require('@site/static/img/anusha.jpg').default,
     description: (
       <>
-        Use this as the basis to create your own provider..
+        Technical Product Manager @ Nirmata
+      </>
+    ),
+  },
+  {
+    title: 'Avishay Traeger',
+    imgurl: require('@site/static/img/avishay.jpg').default,
+    description: (
+      <>
+        Senior Principal Software Engineer @ Redhat
       </>
     ),
   },
 ];
 
-function Feature({Svg, title, description}) {
+function Feature({imgurl, title, description}) {
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
+        <img src={imgurl} height="200" />
       </div>
       <div className="text--center padding-horiz--md">
         <h3>{title}</h3>
