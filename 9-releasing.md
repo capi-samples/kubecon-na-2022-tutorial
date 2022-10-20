@@ -48,7 +48,7 @@ releaseSeries:
     contract: v1beta1
 ```
 
-> This is mapping the 0.1.x release series to the v1beta1 api contract of capi. You will need to update this file when you change the major or minor version number AND when there is a new version of CAPI API contract that your provider supports.
+> This is mapping the 0.1.x release series to the v1beta1 api contract of CAPI. You will need to update this file when you change the major or minor version number AND when there is a new version of CAPI API contract that your provider supports.
 
 ## Update the container build
 

@@ -21,7 +21,7 @@ When implementing the controller for `DockerCluster` (and `DockerMachine`) you w
 
 1. In **Reconcile**, get the instance of the API type being reconciled
 2. Get the owning CAPI type (i.e. if we are reconciling `DockerCluster` then we get `Cluster`)
-   1. You may need to other types if you are reconciling machines
+   1. You may need other types if you are reconciling machines
 3. If the owning CAPI type doesn't exist yet (because the "owner reference isn't set yet"), then exit
 4. If the instance has a non-zero deletion timestamp (indicating that it has been marked for deletion), then call a **reconcileDelete** function that:
    1. Performs any actions to delete the infrastructure
@@ -80,7 +80,7 @@ make manifests
 
 ## Implementing Reconciliation
 
-**Background:** In this section we will be implementing the reconciliation of the `DockerCluster`. The purpose of the __infrastructure cluster__ is to create any required infrastructure for the cluster but not anything related to individual machines/nodes. In the case of the tutorial we will be implementing the pattern mention above and creating a load balancer container instance that will be used to load balance requests to the control plane nodes (when they are created).
+**Background:** In this section we will be implementing the reconciliation of the `DockerCluster`. The purpose of the __infrastructure cluster__ is to create any required infrastructure for the cluster but not anything related to individual machines/nodes. In the case of the tutorial we will be implementing the pattern mentioned above and creating a load balancer container instance that will be used to load balance requests to the control plane nodes (when they are created).
 
 ### Implement Reconcile Pattern
 
@@ -120,7 +120,7 @@ func (r *DockerClusterReconciler) Reconcile(ctx context.Context, req ctrl.Reques
    ```go
 	ctx = container.RuntimeInto(ctx, r.ContainerRuntime)
    ```
-   3. Change this import `infrastructurev1alpha1 "github.com/capi-samples/cluster-api-provider-docker/api/v1alpha1"` to `infrav1 "github.com/capi-samples/cluster-api-provider-docker/api/v1alpha1"` and update the import name in **SetupWithManager**
+   3. Change this import `infrastructurev1alpha1 "github.com/capi-samples/cluster-api-provider-docker/api/v1alpha1"` to `infrav1 "github.com/capi-samples/cluster-api-provider-docker/api/v1alpha1"` and update the import name in **SetupWithManager** function.
    > The convention is to import your api with the major api version in the name only. The reason is when introducing a new api version you just update the import and not the import alias so as to reduce the number of code changes.
    1. Add the following imports:
    ```go
@@ -134,7 +134,7 @@ func (r *DockerClusterReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	"github.com/capi-samples/cluster-api-provider-docker/pkg/docker"
    ```
    1. You can delete the `// TODO(user): your logic here` comment.
-   2. We need to get the instance of the `DockerCluster` from the request. And if the instance is not found exit reconciliation. Add the following:
+   2. We need to get the instance of the `DockerCluster` from the request. If the instance is not found exit reconciliation. Add the following:
    ```go
 	dockerCluster := &infrav1.DockerCluster{}
 	if err := r.Client.Get(ctx, req.NamespacedName, dockerCluster); err != nil {
@@ -144,7 +144,7 @@ func (r *DockerClusterReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		return ctrl.Result{}, err
 	}
    ```
-   6. Next get the owning type of the `DockerCluster` which is the CAPI **Cluster**. We can use a helper function from CAPI that will look at the ownerReferences. If it returns nil then we can requeue:
+   6. Next get the owning type of the `DockerCluster` which is the CAPI **Cluster**. We can use a helper function from CAPI that will look at the ownerReferences. If it returns nil, we can requeue:
    ```go
 	// Get the Cluster
 	cluster, err := util.GetOwnerCluster(ctx, r.Client, dockerCluster.ObjectMeta)
@@ -162,7 +162,7 @@ func (r *DockerClusterReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	ctx = ctrl.LoggerInto(ctx, logger)
    ```
    > You can add any name/value pairs that would aid in the support of your provider.
-   8. Reconciliation can be paused, for instance when you pivot from an ephemeral bootstrap cluster to a permanent management cluster (i.e. via [clusterctl move](https://cluster-api.sigs.k8s.io/clusterctl/commands/move.html)). We can check if the reconciliation is paused by looking for a annotation:
+   8. Reconciliation can be paused, for instance when you pivot from an ephemeral bootstrap cluster to a permanent management cluster (i.e. via [clusterctl move](https://cluster-api.sigs.k8s.io/clusterctl/commands/move.html)). We can check if the reconciliation is paused by looking for an annotation:
    ```go
 	if annotations.IsPaused(cluster, dockerCluster) {
 		logger.Info("DockerCluster or owning Cluster is marked as paused, not reconciling")
@@ -170,7 +170,7 @@ func (r *DockerClusterReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		return ctrl.Result{}, nil
 	}
    ```
-   9. We will be using a helper to manage the lifecycle of the load balancer we will be created. So create a new instance of this:
+   9. We will be using a helper to manage the lifecycle of the load balancer that will be created. So create a new instance of this:
    ```go
 	// Create a helper for managing a docker container hosting the loadbalancer.
 	externalLoadBalancer, err := docker.NewLoadBalancer(ctx, cluster, dockerCluster)
@@ -179,7 +179,7 @@ func (r *DockerClusterReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	}
    ```
    > Some providers follow a **Scope & Services** pattern. So instead of creating a loadbalancer helper they would create a **Cluster Scope** at this point which will hold everything that is required for reconciliation. If you are interested have a look at the [example from Cluster API Provider AWS](https://github.com/kubernetes-sigs/cluster-api-provider-aws/blob/main/controllers/awscluster_controller.go#L181:L188)
-   10. When we exit reconciliation we want to persistent any changes to `DockerCluster` and this is done by using patchhelper:
+   10. When we exit reconciliation, we want to persist any changes to `DockerCluster` and this is done by using a patch helper:
    ```go
 	// Initialize the patch helper
 	patchHelper, err := patch.NewHelper(dockerCluster, r.Client)
@@ -196,8 +196,8 @@ func (r *DockerClusterReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		}
 	}()
    ```
-   > If we where using conditions then we would need to set the condition values here as part of the patch.
-   11. Now we are at the position of being able to do the actions thare are specific to the Docker provider for create/update (i.e. **reconcileNormal**) and delete (i.e. **reconcileDelete**). Replace `return ctrl.Result{}, nil` with
+   > If we were using conditions then we would need to set the condition values here as part of the patch.
+   11. Now we are at the position of being able to do the actions that are specific to the Docker provider for create/update (i.e. **reconcileNormal**) and delete (i.e. **reconcileDelete**). Replace `return ctrl.Result{}, nil` with
    ```go
 	// Handle deleted clusters
 	if !dockerCluster.DeletionTimestamp.IsZero() {
@@ -320,7 +320,7 @@ func (r *DockerClusterReconciler) SetupWithManager(ctx context.Context, mgr ctrl
 	}
 ```
 > This tells controller runtime to call **Reconcile** when there is a change to `DockerCluster`. Additionally you can add predicates (or event filters) to stop reconciliation occurring in certain situations. In this instance we use `WithEventFilter(predicates.ResourceNotPaused` to ensure reconciliation is not called when reconciliation is paused. You can also customize the settings of the "controller manager" by using `WithOptions(options)` if needed, this often used to limit the number of concurrent reconciliations (although there will be at most one reconcile for a given instance).
-6. In addition to the controller reconcilining on changes to `DockerCluster` we would also like it to happen if there are changes to its owning **Cluster**. Controller runtime allows you to watch a different resource type and then decide if you want to enqueue a request for reconciliation. Add the following:
+6. In addition to the controller reconciling on changes to `DockerCluster` we would also like it to happen if there are changes to its owning **Cluster**. Controller runtime allows you to watch a different resource type and then decide if you want to enqueue a request for reconciliation. Add the following:
 ```go
 return c.Watch(
 	&source.Kind{Type: &clusterv1.Cluster{}},
@@ -329,7 +329,7 @@ return c.Watch(
 )
 ```
 > This is saying to watch **clusterv1.Cluster** and if there is a change to a **Cluster** instance, get the child `DockerCluster` name/namespace using `util.ClusterToInfrastructureMapFunc(ctx, infrav1.GroupVersion.WithKind("DockerCluster"), mgr.GetClient(), &infrav1.DockerCluster{})` and then use that name/namespace to enqueue a request for reconciliation of the `DockerCluster` instance with that name/namespace using `handler.EnqueueRequestsFromMapFunc`. This will then result in **Reconciliation** being called.
-7. As we have changed the parameters to **SetupWithManager** go to `main.go`.
+7. As we have changed the parameters to **SetupWithManager** function, go to `main.go`.
 8. In the **main** function make these changes:
    1. Add the following before we create the reconcilers:
    ```go
@@ -359,7 +359,7 @@ return c.Watch(
    ```
 9. Ensure that all the api types are registered:
    1. Add `clusterv1 "sigs.k8s.io/cluster-api/api/v1beta1"` as an import in `main.go` 
-   2. Add this api to the scheme by adding the following to **init**:
+   2. Add this api to the scheme by adding the following to **init** function:
    ```go
 	utilruntime.Must(clusterv1.AddToScheme(scheme))
    ```
