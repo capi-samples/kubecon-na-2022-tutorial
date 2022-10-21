@@ -1,4 +1,4 @@
-# Implementing the machine api/controller
+# Implementing the machine controller
 
 **Objective:** Define the `DockerMachine` API and implement the corresponding reconciliation logic.
 
@@ -339,6 +339,7 @@ return ctrl.Result{}, nil
 ```
 
 ### Setup the controller
+
 Copy the **SetupWithManager** function from [here](https://github.com/capi-samples/cluster-api-provider-docker/blob/main/controllers/dockermachine_controller.go), which is very similar to the corresponding function for **DockerCluster**.  You can see that this one is configured to watch `DockerMachine`s as well as their corresponding `Machine`s.
 
 ## Adding the DockerMachineTemplate Resource
