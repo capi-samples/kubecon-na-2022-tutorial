@@ -1,4 +1,4 @@
-# Implementing the cluster api/controller
+# Implementing the cluster controller
 
 **Objective:** Define the `DockerCluster` API and implement the corresponding reconciliation logic.
 
@@ -161,7 +161,9 @@ func (r *DockerClusterReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	logger = logger.WithValues("cluster", klog.KObj(cluster))
 	ctx = ctrl.LoggerInto(ctx, logger)
    ```
+   
    > You can add any name/value pairs that would aid in the support of your provider.
+
    8. Reconciliation can be paused, for instance when you pivot from an ephemeral bootstrap cluster to a permanent management cluster (i.e. via [clusterctl move](https://cluster-api.sigs.k8s.io/clusterctl/commands/move.html)). We can check if the reconciliation is paused by looking for an annotation:
    ```go
 	if annotations.IsPaused(cluster, dockerCluster) {
@@ -319,7 +321,9 @@ func (r *DockerClusterReconciler) SetupWithManager(ctx context.Context, mgr ctrl
 		return err
 	}
 ```
+
 > This tells controller runtime to call **Reconcile** when there is a change to `DockerCluster`. Additionally you can add predicates (or event filters) to stop reconciliation occurring in certain situations. In this instance we use `WithEventFilter(predicates.ResourceNotPaused` to ensure reconciliation is not called when reconciliation is paused. You can also customize the settings of the "controller manager" by using `WithOptions(options)` if needed, this often used to limit the number of concurrent reconciliations (although there will be at most one reconcile for a given instance).
+
 6. In addition to the controller reconciling on changes to `DockerCluster` we would also like it to happen if there are changes to its owning **Cluster**. Controller runtime allows you to watch a different resource type and then decide if you want to enqueue a request for reconciliation. Add the following:
 ```go
 return c.Watch(
@@ -328,7 +332,9 @@ return c.Watch(
 	predicates.ClusterUnpaused(ctrl.LoggerFrom(ctx)),
 )
 ```
+
 > This is saying to watch **clusterv1.Cluster** and if there is a change to a **Cluster** instance, get the child `DockerCluster` name/namespace using `util.ClusterToInfrastructureMapFunc(ctx, infrav1.GroupVersion.WithKind("DockerCluster"), mgr.GetClient(), &infrav1.DockerCluster{})` and then use that name/namespace to enqueue a request for reconciliation of the `DockerCluster` instance with that name/namespace using `handler.EnqueueRequestsFromMapFunc`. This will then result in **Reconciliation** being called.
+
 7. As we have changed the parameters to **SetupWithManager** function, go to `main.go`.
 8. In the **main** function make these changes:
    1. Add the following before we create the reconcilers:
@@ -341,7 +347,9 @@ return c.Watch(
 		os.Exit(1)
 	}
    ```
+
    > This setups signal handlers so that the controllers can be gracefully terminated.
+
    2. Update the creation of **DockerClusterReconciler** to pass in the **runtimeClient** and the call to **SetupWithManager** on to pass in the context:
    ```go
 	if err = (&controllers.DockerClusterReconciler{
@@ -353,7 +361,7 @@ return c.Watch(
 		os.Exit(1)
 	}
    ```
-   1. Change the `mgr.Start` to use the context created earlier:
+   3. Change the `mgr.Start` to use the context created earlier:
    ```go
 	if err := mgr.Start(ctx); err != nil {
    ```

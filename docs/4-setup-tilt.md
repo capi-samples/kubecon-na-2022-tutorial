@@ -35,7 +35,7 @@
    4.   **label** is required for the Tilt UI
    5.   You can have more than 1 provider in a repo so this block could be repeated many times.
 
-> NOTE: There are conventions that relate to the acronym used for a CAPI provider.....**TODO
+> NOTE: There are conventions that relate to the acronym used for a CAPI provider. Infrastructure providers start with **CAP** and then a one or more characters (but not **BP**), for example CAPA for the AWS provider, CAPZ for the Azure provider. A bootstrap provider starts with **CAPBP** and then one or characters, for example CAPBPK for the Kubeadm bootstrap provider.
 
 5. Edit the `config/default/kustomization.yaml` in your provider repo:
     1. Change the `namespace` to **capdkc-system**
@@ -217,7 +217,7 @@ tilt up
 
 **Objective:** Attach a debugger to the provider which is running via delve. 
 
-**Background:** We will use VSCode as ana example but similar steps can be used for other IDEs such as Goland
+**Background:** We will use VSCode as an example but similar steps can be used for other IDEs such as Goland
 
 1. Create the following file (if it doesn't exists) `.vscode/launch.json` in your providers repo
 2. Add the following launch configuration to it:
