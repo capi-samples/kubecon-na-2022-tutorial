@@ -241,7 +241,7 @@ func setMachineAddress(ctx context.Context, dockerMachine *infrastructurev1alpha
 	}
 	return nil
 }
-11. Now we need to set the ProviderID both in the spec of the `DockerMachine` and in the spec of the `Node` in the workload cluster. This is necessary because kubernetes will automatically approve the CSRs (certificate signing request) for new nodes only if these fields match. We add the following code to our **reconcileNormal** function:
+11. Now we need to set the ProviderID both in the spec of the `DockerMachine` and in the spec of the `Node` in the workload cluster. This is necessary because some parts of kubernetes rely on being able to match `Node`s and `Machine`s, such as autoscaling and CSR approval. We add the following code to our **reconcileNormal** function:
 ```go
 // Usually a cloud provider will do this, but there is no docker-cloud provider
 remoteClient, err := r.Tracker.GetClient(ctx, client.ObjectKeyFromObject(cluster))
