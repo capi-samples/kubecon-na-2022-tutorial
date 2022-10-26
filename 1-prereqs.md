@@ -7,6 +7,7 @@ You will need to install the following to follow along with this tutorial:
 - [Go v1.19](https://go.dev/dl/)
 - [Kubebuilder v3.6.0](https://github.com/kubernetes-sigs/kubebuilder/releases/tag/v3.6.0)
 - [Docker](https://docs.docker.com/get-docker/)
+  - If you are using a Mac then please use Docker Desktop v4.12 or less. There is an issue with v4.13 due to a change to the socket location.
 - [Tilt](https://docs.tilt.dev/install.html)
 - [Kubectl](https://kubernetes.io/docs/tasks/tools/)
 - [Kustomize](https://github.com/kubernetes-sigs/kustomize)
