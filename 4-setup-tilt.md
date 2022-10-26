@@ -183,6 +183,7 @@ spec:
     3. **debug**: we are saying that we want our provider to be started via delve and the debugger to listen on port **30000**.
 17. Open another terminal (or pane) and go to the `cluster-api` directory.
 18. Run the following to create a configuration for kind:
+
 ```shell
 cat > kind-cluster-with-extramounts.yaml <<EOF
 kind: Cluster
@@ -195,7 +196,10 @@ nodes:
       containerPath: /var/run/docker.sock
 EOF
 ```
-19. Run the following command to create a local kind cluster:
+
+> NOTE: if you are using Docker Desktop v4.13 or above then you will you will encounter issues from here. Until a permanent solution is found its recommended you use v4.12
+
+19.  Run the following command to create a local kind cluster:
 
 ```shell
 kind create cluster --config kind-cluster-with-extramounts.yaml
