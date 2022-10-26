@@ -167,7 +167,7 @@ spec:
         "EXP_CLUSTER_RESOURCE_SET": "true"
     },
     "extra_args": {
-        "docker-kubecon": ["-zap-log-level=debug"],
+        "docker-kubecon": ["-zap-log-level=debug"]
     },
     "debug": {
         "docker-kubecon": {
@@ -219,7 +219,7 @@ tilt up
 
 ## Debugging
 
-**Objective:** Attach a debugger to the provider which is running via delve. 
+**Objective:** Attach a debugger to the provider which is running via delve.
 
 **Background:** We will use VSCode as an example but similar steps can be used for other IDEs such as Goland
 
