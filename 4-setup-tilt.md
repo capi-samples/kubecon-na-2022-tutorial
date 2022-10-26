@@ -232,7 +232,7 @@ tilt up
             "request": "attach",
             "mode": "remote",
             "remotePath": "${workspaceFolder}",
-            "port": 30000,
+            "port": 31000,
             "host": "127.0.0.1"
         }
     ]
