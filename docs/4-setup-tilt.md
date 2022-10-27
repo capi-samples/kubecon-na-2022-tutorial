@@ -2,6 +2,9 @@
 
 **Objective:** Learn how to setup `Tilt` to enable us to develop the provider in a rapid & iterative manner. Also learn how we can attach a debugger to the provider.
 
+- [Setting up Tilt](#setting-up-tilt)
+  - [Debugging](#debugging)
+
 **Background:** Every CAPI provider has a `tilt-provider.json` in the root of its repo which is used by the upstream CAPI Tiltfile to tell it about your provider. This is used to configure hot reloading and the categorization within the tilt ui
 
 1. Ensure **Tilt** and **kind** are installed
