@@ -46,7 +46,7 @@ When implementing the controller for `DockerCluster` (and `DockerMachine`) you w
    ```go
 	// Ready indicates that the cluster is ready.
 	// +optional
-	// +kubebuilder:default=falctrl.SetupSignalHandler()se
+	// +kubebuilder:default=false
 	Ready bool `json:"ready"`
    ```
 4. Now add the provider specific fields to the **DockerClusterSpec**. In our example we will allow the user to optionally override the image to use for the loadbalancer. Add the following:
@@ -59,7 +59,7 @@ When implementing the controller for `DockerCluster` (and `DockerMachine`) you w
 5. As we will be creating external infrastructure, we will need to use finalizers. So define a finalizer:
    ```go
 	const (
-		// ClusterFinalizer allows cleaning up resources associated with 
+		// ClusterFinalizer allows cleaning up resources associated with
 		// DockerCluster before removing it from the apiserver.
 		ClusterFinalizer = "dockercluster.infrastructure.cluster.x-k8s.io"
 	)
@@ -161,7 +161,7 @@ func (r *DockerClusterReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	logger = logger.WithValues("cluster", klog.KObj(cluster))
 	ctx = ctrl.LoggerInto(ctx, logger)
    ```
-   
+
    > You can add any name/value pairs that would aid in the support of your provider.
 
    8. Reconciliation can be paused, for instance when you pivot from an ephemeral bootstrap cluster to a permanent management cluster (i.e. via [clusterctl move](https://cluster-api.sigs.k8s.io/clusterctl/commands/move.html)). We can check if the reconciliation is paused by looking for an annotation:
@@ -366,7 +366,7 @@ return c.Watch(
 	if err := mgr.Start(ctx); err != nil {
    ```
 9. Ensure that all the api types are registered:
-   1. Add `clusterv1 "sigs.k8s.io/cluster-api/api/v1beta1"` as an import in `main.go` 
+   1. Add `clusterv1 "sigs.k8s.io/cluster-api/api/v1beta1"` as an import in `main.go`
    2. Add this api to the scheme by adding the following to **init** function:
    ```go
 	utilruntime.Must(clusterv1.AddToScheme(scheme))
