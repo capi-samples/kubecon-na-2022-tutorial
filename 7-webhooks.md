@@ -1,6 +1,20 @@
 # Adding webhooks
 
+**Objective:** Add a webhook for `DockerCluster` and see it in action.
+
+- [Adding webhooks](#adding-webhooks)
+  - [Background](#background)
+  - [Instructions](#instructions)
+    - [Pre-req - Check Cert manager installation](#pre-req---check-cert-manager-installation)
+    - [Implement defaulting/validating webhooks](#implement-defaultingvalidating-webhooks)
+    - [Enable webhook and cert-manager](#enable-webhook-and-cert-manager)
+    - [Generate webhook manifests](#generate-webhook-manifests)
+    - [Deploy Webhooks](#deploy-webhooks)
+    - [Let's add a simple validation](#lets-add-a-simple-validation)
+  - [Resource](#resource)
+
 ## Background
+
 Admission webhooks are HTTP callbacks that receive admission requests, process them and return admission responses.
 
 Kubernetes provides the following types of admission webhooks:

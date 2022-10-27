@@ -1,6 +1,6 @@
 # Releasing
 
-**Objective:** Setup a release pipeline and produce our first release.
+**Objective:** Set up a release pipeline and produce our first release.
 
 - [Releasing](#releasing)
   - [Background](#background)
